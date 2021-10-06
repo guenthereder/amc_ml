@@ -24,7 +24,7 @@ class Viewer:
     self.joints = joints
     self.motions = motions
     self.frame = 0 # current frame of the motion sequence
-    self.playing = False # whether is playing the motion sequence
+    self.playing = True # whether is playing the motion sequence
     self.fps = 120 # frame rate
 
     # whether is dragging
@@ -154,6 +154,8 @@ class Viewer:
       self.frame += 1
       if self.frame >= len(self.motions):
         self.frame = 0
+    if pressed[pygame.K_ESCAPE]:
+      self.done = True
     # global rotation
     grx = euler.euler2mat(self.global_rx, 0, 0)
     gry = euler.euler2mat(0, self.global_ry, 0)
