@@ -1,45 +1,10 @@
 # AMCParser
 
-A lightweight library to parse and visualize asf/amc files from [CMU MoCap](http://mocap.cs.cmu.edu/) dataset using Python 3.
-
-The main purpose of this library is to help understanding how asf/amc file works, as well as how to use them. Therefore, simplicity and readability are stressed, while robustness is ignored.
-
-## Demo
-
-Demo using PyGame and PyOpenGL:
-
-![3D Demo](demo.gif)
-
-Demo using Matplotlib:
-
-![Static Demo](demo_static.png)
+Forked from [CalciferZh](https://github.com/CalciferZh/AMCParser)
 
 ## Usage
 
-There's a simple example in the source code as follows:
-
-```python
-if __name__ == '__main__':
-  asf_path = './data/01/01.asf'
-  amc_path = './data/01/01_01.amc'
-  joints = parse_asf(asf_path)
-  motions = parse_amc(amc_path)
-  frame_idx = 180
-  joints['root'].set_motion(motions[frame_idx])
-  joints['root'].draw()
-```
-
-And another example in `3Dviewer.py`:
-```python
-  asf_path = './data/01/01.asf'
-  amc_path = './data/01/01_01.amc'
-  joints = parse_asf(asf_path)
-  motions = parse_amc(amc_path)
-  v = Viwer(joints, motions)
-  v.run()
-```
-
-The data can be found from CMU MoCap dataset.
+./3DViewer <asf_file> <amc_file>
 
 ## Parser
 
@@ -58,8 +23,7 @@ In 3DViewer, we support:
 * `RETURN` to reset camera view.
 * `SPACE` to start/pause.
 * `,` and `.` to rewind and forward.
-
-NOTE that my implementation of changing view is inefficient (but fluent enough) with some small bugs, but I don't have time to improve it. Pull request is welcomed.
+* `ESC` to quit
 
 ## Dependencies
 
@@ -70,7 +34,3 @@ NOTE that my implementation of changing view is inefficient (but fluent enough) 
 * pyopengl
 
 All the dependencies are available via `pip install`.
-
-## One More Thing
-
-If this repo is used in any publications or projects, please let me know. I would be happy and encouraged =)
