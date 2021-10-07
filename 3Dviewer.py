@@ -7,17 +7,9 @@ import argparse
 if __name__ == '__main__':
   
   parser = argparse.ArgumentParser(description='View ASF 3D Files')
-
   parser.add_argument('asf_path', type=str, help='path to the asf file to view')
-
   parser.add_argument('amc_path', type=str, help='path to the amc file to view')
-  
   args = parser.parse_args()
-  
-  # asf_path = './data/01/01.asf'
-  # amc_path = './data/01/01_01.amc'
-  # joints = parse_asf(asf_path)
-  # motions = parse_amc(amc_path)
 
   joints = parse_asf(args.asf_path)
   motions = parse_amc(args.amc_path)

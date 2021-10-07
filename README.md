@@ -4,7 +4,7 @@ Forked from [CalciferZh](https://github.com/CalciferZh/AMCParser)
 
 ## Usage
 
-./3DViewer <asf_file> <amc_file>
+`./3DViewer <asf_file> <amc_file>`
 
 ## Parser
 
