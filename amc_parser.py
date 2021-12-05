@@ -140,46 +140,29 @@ def parse_amc(file_path):
   return frames
 
 
-def test_all():
-  import os
-  lv0 = './data'
-  lv1s = os.listdir(lv0)
-  for lv1 in lv1s:
-    lv2s = os.listdir('/'.join([lv0, lv1]))
-    asf_path = '%s/%s/%s.asf' % (lv0, lv1, lv1)
-    print('parsing %s' % asf_path)
-    joints = parse_asf(asf_path)
-    motions = parse_amc('./nopose.amc')
-    joints['root'].set_motion(motions[0])
-    joints['root'].draw()
-
-    # for lv2 in lv2s:
-    #   if lv2.split('.')[-1] != 'amc':
-    #     continue
-    #   amc_path = '%s/%s/%s' % (lv0, lv1, lv2)
-    #   print('parsing amc %s' % amc_path)
-    #   motions = parse_amc(amc_path)
-    #   for idx, motion in enumerate(motions):
-    #     print('setting motion %d' % idx)
-    #     joints['root'].set_motion(motion)
-
-
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='View ASF 3D Files')
   parser.add_argument('asf_path', type=str, help='path to the asf file to view')
   parser.add_argument('amc_path', type=str, help='path to the amc file to view')
   args = parser.parse_args()
 
-  lv0 = './data'
-  lv1s = os.listdir(lv0)
-  for lv1 in lv1s:
-    lv2s = os.listdir('/'.join([lv0, lv1]))
-    asf_path = '%s/%s/%s.asf' % (lv0, lv1, lv1)
-    print('parsing %s' % asf_path)
-    joints = parse_asf(asf_path)
-    motions = parse_amc('./nopose.amc')
-    joints['root'].set_motion(motions[0])
-    joints['root'].draw()
+  print('parsing %s' % args.asf_path)
+  joints = parse_asf(args.asf_path)
+  motions = parse_amc(args.amc_path)
+  joints['root'].set_motion(motions[0])
+  joints['root'].draw()
+
+
+  # lv0 = './data/subject'
+  # lv1s = os.listdir(lv0)
+  # for lv1 in lv1s:
+  #   lv2s = os.listdir('/'.join([lv0, lv1]))
+  #   asf_path = '%s/%s/%s.asf' % (lv0, lv1, lv1)
+  #   print('parsing %s' % asf_path)
+  #   joints = parse_asf(asf_path)
+  #   motions = parse_amc('./nopose.amc')
+  #   joints['root'].set_motion(motions[0])
+  #   joints['root'].draw()
 
     # for lv2 in lv2s:
     #   if lv2.split('.')[-1] != 'amc':
