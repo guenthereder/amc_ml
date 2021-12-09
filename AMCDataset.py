@@ -17,96 +17,23 @@ class AMCDataset(Dataset):
     AMCDataset holds all data for torch computation
     '''
 
-    def __init__(self, df:pd.DataFrame, **kwargs):
-        '''
-        :param df: the pandas data frame holding the data
-        :param kwargs: parameters
-        :return: nothing
-        '''
+    def __init__(self, df:pd.DataFrame, field_data:str = 'data', field_label:str = 'label'):
+        self.max_seq_len  = max(x.shape[0] for x in df.data)
+        #self.padding_list = [self.max_seq_len - x.shape[0] for x in df[field_data]]
 
-        
-        self.features_all = sorted(set(features))
-        self.features_bin = bin_vector
-        
-        self.feature_info_num = []
-        self.feature_info_cat = []
-        self.feature_info_bin = []
-        self.label_info    = label
+        self.data    = [nn.ConstantPad1d((0, self.max_seq_len - d.shape[0]), 0)(d.transpose(1,0)).transpose(1,0) for d in df.data]
 
-        '''reduce locally to features we use'''
-        df = pd_df[self.features_all]        
-        
-        num_labels  = []
-        cat_labels  = []
-        coded_cols  = []
-        cat_distrib = []
-        bin_vect    = []
-        
-        for col in df.columns:
-            if col in bin_vector:
-                self.feature_info_bin.append(col)
-                '''convert/handle to binary vector, from index lixt'''
-                for _, num_list in df[[col]].iterrows():
-                    num_list_l = list(num_list)[0]                    
-                    bin_vect.append( 
-                        [1 if x in num_list_l else 0 for x in range(0,self.bin_vect_max)]
-                    )
-            elif is_numeric_dtype(df[col]):
-                '''handle numerical data'''
-                num_labels.append(col)
-                #df[col] = df[col].astype('float64')
-                df.loc[:, col] = df[col].astype('float64')
-                self.feature_info_num.append(col)
-            elif df[col].dtype.name == 'category':
-                '''handle categroical data'''
-                cat_labels.append(col)
-                self.cat_sizes.append( len(df[col].dtype.categories) )
-                coded_cols.append(df[col].cat.codes.values.tolist())
-                try:
-                    cat_distrib.append( 
-                        self.__get_distribution(df[col].dtype.categories.values, df[col]) 
-                    )
-                except ValueError:
-                    print('Error at cat col {}'.format(col))
-                    raise
-                    
-                self.feature_info_cat.append(col)
-            else:
-                '''non float non categoric'''
-                #print('skipping {}'.format(col))
-        
-        # DATA LISTS
-        self.num_data  = [torch.tensor(l) for l in df[num_labels].values.tolist()]
-        self.cat_data  = [torch.tensor(l) for l in zip(*coded_cols)]
-        self.bin_vect  = [torch.tensor(l) for l in bin_vect]
-        if 'cid' in label and 'cid' not in df.columns:
-            '''cid is index'''
-            sub_label = label.copy()
-            sub_label.remove('cid')
-            self.label     = [(a,b[0]) for a,b in zip(list(pd_df.index),pd_df[sub_label].values.tolist())]
-        else:
-            self.label     = pd_df[label].values.tolist()
-        
-        '''categorical distribustion and numerical max entries for normaliziation'''
-        self.cat_distrib  = cat_distrib
-        self.num_max   = self.num_data[0]
-        for num_entry in self.num_data:
-             self.num_max = torch.max(torch.cat((self.num_max, num_entry)).view(2,len(num_labels)), dim=0)[0]
-       
-        self.num_features = len(num_labels)
-        self.cat_features = len(self.cat_sizes)
+        #self.data    = [d for d in df[field_data]]
+        self.labels  = [x for x in df[field_label]]
+        self.indices = [idx for idx in df.index]
     
-  
     
     def __len__(self):
-        return len(self.label)
+        return len(self.labels)
     
     
     def __repr__(self):
-        repr_str  = 'features num: ' + ', '.join(self.feature_info_num) + '\n'
-        repr_str += 'features cat: ' + ', '.join(self.feature_info_cat) + '\n'
-        repr_str += 'features bin: ' + ', '.join(self.feature_info_bin) + '\n'
-        repr_str += 'labels:   ' + ', '.join(self.label_info)
+        repr_str  = f"{len(self.labels)} items"
         return repr_str
 
     
@@ -115,11 +42,8 @@ class AMCDataset(Dataset):
     
     
     def __getitem__(self, idx):
-        x1, x2, y = self.num_data[idx], self.cat_data[idx], self.label[idx]
-        bv = self.bin_vect[idx]
+        data, idx, label = self.data[idx], self.indices[idx], self.labels[idx]
+        #print('todo PADDING data')
         
-        if self.normalize:
-            x1 = x1/self.num_max
-        
-        return (x1,x2,bv), y
+        return data, (label, idx)
     
