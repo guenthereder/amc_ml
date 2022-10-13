@@ -2,6 +2,10 @@
 
 Forked from [CalciferZh](https://github.com/CalciferZh/AMCParser)
 
+## Whats different?
+
+This repo contains scripts to pre-process the (well knonwn) ASF/AMC MoCap data into pandas dataframes that can be easily used for machine learning. Since I do not have much time a.t.m. I leave this code as is for the near future.
+
 ## Usage
 
 `./3Dviewer.py <asf_file> <amc_file>`
